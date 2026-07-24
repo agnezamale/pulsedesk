@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.pulsedesk.model.Comment;
 import com.pulsedesk.model.CreateCommentRequest;
 import com.pulsedesk.service.CommentService;
+import com.pulsedesk.model.CommentResponse;
 
 import jakarta.validation.Valid;
 
@@ -27,8 +28,8 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseEntity<Comment> create(@Valid @RequestBody CreateCommentRequest request) {
-        Comment saved = commentService.create(request);
+    public ResponseEntity<CommentResponse> create(@Valid @RequestBody CreateCommentRequest request) {
+        CommentResponse saved = commentService.create(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
