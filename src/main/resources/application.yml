@@ -21,8 +21,8 @@ spring:
 server:
   port: 8080
 
-# Hugging Face Inference API — set HF_API_TOKEN in your environment
+# Hugging Face Inference Providers (chat completions) — set HF_API_TOKEN in your environment
 huggingface:
-  api-url: https://api-inference.huggingface.co/models
-  model: google/flan-t5-base
+  api-url: https://router.huggingface.co/v1/chat/completions
+  model: Qwen/Qwen2.5-1.5B-Instruct:featherless-ai
   api-token: ${HF_API_TOKEN:}

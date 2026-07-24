@@ -1,0 +1,98 @@
+:root {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  color: #1c2430;
+  background: #f3f6fa;
+}
+
+body {
+  margin: 0;
+}
+
+.page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 3rem;
+}
+
+header h1 {
+  margin: 0;
+}
+
+header p {
+  margin: 0.25rem 0 1.5rem;
+  color: #5b6775;
+}
+
+.card {
+  background: white;
+  border: 1px solid #d9e1ea;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+input,
+select,
+textarea,
+button {
+  display: block;
+  width: 100%;
+  margin-top: 0.35rem;
+  font: inherit;
+  padding: 0.55rem 0.7rem;
+  border-radius: 8px;
+  border: 1px solid #c7d2de;
+  box-sizing: border-box;
+}
+
+button {
+  background: #1f6feb;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+@media (min-width: 800px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  padding: 0.65rem 0;
+  border-bottom: 1px solid #edf1f5;
+}
+
+.meta {
+  color: #5b6775;
+  font-size: 0.9rem;
+  margin-top: 0.2rem;
+}
+
+.status {
+  margin-top: 0.75rem;
+  color: #0f7b4c;
+}

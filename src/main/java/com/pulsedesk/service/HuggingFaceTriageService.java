@@ -30,8 +30,10 @@ public class HuggingFaceTriageService implements TriageService {
 		try {
 			String prompt = buildPrompt(comment.getText());
 			String raw = huggingFaceClient.generate(prompt);
+			System.out.println("HF raw response: " + raw);
 			return parser.parse(raw);
 		} catch (Exception e) {
+			System.out.println("HF failed, using dummy. Reason: " + e.getMessage());
 			return fallback.analyze(comment);
 		}
 	}
