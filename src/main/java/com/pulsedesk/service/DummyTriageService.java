@@ -8,8 +8,8 @@ import com.pulsedesk.model.Priority;
 import com.pulsedesk.model.TriageResult;
 
 @Service
-public class DummyTriageService {
-
+public class DummyTriageService implements TriageService {
+    @Override
     public TriageResult analyze(Comment comment) {
         String text = comment.getText() == null ? "" : comment.getText().toLowerCase();
 

@@ -16,12 +16,12 @@ import com.pulsedesk.repository.CommentRepository;
 public class CommentService {
 
     private final CommentRepository commentRepository;
-    private final DummyTriageService triageService;
+    private final TriageService triageService;
     private final TicketService ticketService;
-
+    
     public CommentService(
             CommentRepository commentRepository,
-            DummyTriageService triageService,
+            TriageService triageService,
             TicketService ticketService
     ) {
         this.commentRepository = commentRepository;
