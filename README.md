@@ -128,6 +128,8 @@ Live demo:
 - Frontend: https://pulsedesk-zeta.vercel.app
 - Backend: https://pulsedesk-gifc.onrender.com
 
+![PulseDesk UI](docs/ui-screenshot.png)
+
 Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`).
 
 > **Note:** Render’s free tier sleeps when idle, so the **first request may take about 30–60 seconds**. Later requests are faster.
