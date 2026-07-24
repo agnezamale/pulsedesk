@@ -124,48 +124,17 @@ frontend/       React UI
 
 ## Deploy
 
-### Live demo
+Live demo:
+- Frontend: https://pulsedesk-zeta.vercel.app
+- Backend: https://pulsedesk-gifc.onrender.com
 
-- Frontend (Vercel): https://pulsedesk-zeta.vercel.app
-- Backend (Render): https://pulsedesk-gifc.onrender.com
+Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`).
 
-> **Note:** The backend runs on Render’s free tier. After idle time the service sleeps, so the **first request may take about 30–60 seconds** while the app wakes up. Later requests are much faster.
-
-### Backend on Render
-
-1. Push this repo to GitHub (includes `Dockerfile`)
-2. Create a **Web Service** on [Render](https://render.com)
-3. Settings:
-   - Runtime: **Docker**
-   - Root Directory: empty (repo root)
-   - Branch: `main`
-4. Environment variables:
-   - `HF_API_TOKEN` = your Hugging Face token
-   - `CORS_ALLOWED_ORIGINS` = `https://pulsedesk-zeta.vercel.app,http://localhost:5173`
-5. Deploy, then check:
-
-```bash
-curl https://pulsedesk-gifc.onrender.com/api/health
-```
-
-### Frontend on Vercel
-
-1. Import the same GitHub repo in [Vercel](https://vercel.com)
-2. Settings:
-   - Root Directory: `frontend`
-   - Framework Preset: **Vite**
-   - Build Command: `npm run build`
-   - Output Directory: `dist`
-3. Environment variable:
-   - `VITE_API_URL` = `https://pulsedesk-gifc.onrender.com` (no trailing slash)
-4. Deploy
-
-After the Vercel domain is known, update `CORS_ALLOWED_ORIGINS` on Render and redeploy the backend.
+> **Note:** Render’s free tier sleeps when idle, so the **first request may take about 30–60 seconds**. Later requests are faster.
 
 ## Notes
 
 - Do not commit `.env` or API tokens
 - H2 data is in-memory and resets when the backend restarts
-- Free Render instances sleep when idle (see cold-start note above)
 - Ticket categories: `BUG`, `FEATURE`, `BILLING`, `ACCOUNT`, `OTHER`
 - Priorities: `LOW`, `MEDIUM`, `HIGH`
