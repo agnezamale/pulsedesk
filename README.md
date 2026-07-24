@@ -128,7 +128,8 @@ Live demo:
 - Frontend: https://pulsedesk-zeta.vercel.app
 - Backend: https://pulsedesk-gifc.onrender.com
 
-![PulseDesk UI](docs/ui-screenshot.png)
+<img width="2532" height="1232" alt="image" src="https://github.com/user-attachments/assets/77a0961d-8a04-499d-9591-302835d3ad72" />
+
 
 Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`).
 
@@ -138,5 +139,3 @@ Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`)
 
 - Do not commit `.env` or API tokens
 - H2 data is in-memory and resets when the backend restarts
-- Ticket categories: `BUG`, `FEATURE`, `BILLING`, `ACCOUNT`, `OTHER`
-- Priorities: `LOW`, `MEDIUM`, `HIGH`
