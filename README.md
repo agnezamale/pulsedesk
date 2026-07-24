@@ -128,7 +128,8 @@ Live demo:
 - Frontend: https://pulsedesk-zeta.vercel.app
 - Backend: https://pulsedesk-gifc.onrender.com
 
-<img width="2532" height="1232" alt="image" src="https://github.com/user-attachments/assets/77a0961d-8a04-499d-9591-302835d3ad72" />
+<img width="2553" height="1237" alt="image" src="https://github.com/user-attachments/assets/4402da16-fd91-4a0c-882b-7ba5a5470988" />
+
 
 
 Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`).
