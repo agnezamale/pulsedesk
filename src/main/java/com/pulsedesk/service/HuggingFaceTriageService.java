@@ -51,25 +51,55 @@ public class HuggingFaceTriageService implements TriageService {
 
     private String buildPrompt(String commentText) {
         return """
-                Analyze the user comment and return ONLY valid JSON (no markdown).
-                Schema:
+                You classify support comments. Return ONLY one JSON object. No markdown. No extra text.
+
+                JSON schema:
                 {
-                  "shouldCreateTicket": true|false,
+                  "shouldCreateTicket": true,
                   "title": "short title",
-                  "category": "bug|feature|billing|account|other",
-                  "priority": "low|medium|high",
+                  "category": "bug",
+                  "priority": "high",
                   "summary": "one short sentence"
                 }
-                Rules:
-                - Compliments or thanks => shouldCreateTicket=false
-                - Real problems/requests => shouldCreateTicket=true
-                - category must be one of the allowed values
-                - priority must be one of the allowed values
+
+                Allowed category values: bug, feature, billing, account, other
+                Allowed priority values: low, medium, high
+
+                Category rules (choose exactly one):
+                - bug: crashes, freezes, errors, broken UI, "not working", save/login failures that are technical
+                - billing: invoices, charges, refunds, payments, subscriptions, pricing
+                - account: password reset, cannot sign in, access permissions, profile ownership
+                - feature: requests for new functionality or improvements
+                - other: anything else that still needs support attention
+
+                Important:
+                - If the comment mentions crash/freeze/error/bug, category MUST be "bug" unless it is clearly about money/payment/invoice.
+                - "save", "settings", "button", "screen" alone do NOT mean billing.
+                - Compliments, praise, or thanks only => shouldCreateTicket=false
+                - Real problems or feature requests => shouldCreateTicket=true
+                - priority high: crashes, data loss, payment failures, cannot access account
+                - priority medium: partial breakage, account issues
+                - priority low: minor issues or feature ideas
+
                 Examples:
                 Comment: "I love this app, thanks!"
                 {"shouldCreateTicket":false,"title":"","category":"other","priority":"low","summary":""}
-                Comment: "App crashes when I pay with Visa"
-                {"shouldCreateTicket":true,"title":"Payment crash with Visa","category":"billing","priority":"high","summary":"App crashes during Visa payment."}
+
+                Comment: "App crashes when I open settings"
+                {"shouldCreateTicket":true,"title":"Crash when opening settings","category":"bug","priority":"high","summary":"The app crashes when opening settings."}
+
+                Comment: "The screen freezes every time I tap Save"
+                {"shouldCreateTicket":true,"title":"Freeze when saving","category":"bug","priority":"high","summary":"The screen freezes when tapping Save."}
+
+                Comment: "I was charged twice on my invoice"
+                {"shouldCreateTicket":true,"title":"Double charge on invoice","category":"billing","priority":"high","summary":"User reports being charged twice."}
+
+                Comment: "I cannot login to my account"
+                {"shouldCreateTicket":true,"title":"Cannot log in","category":"account","priority":"medium","summary":"User cannot log into their account."}
+
+                Comment: "Please add dark mode"
+                {"shouldCreateTicket":true,"title":"Add dark mode","category":"feature","priority":"low","summary":"User requests a dark mode feature."}
+
                 Comment: "%s"
                 """.formatted(commentText);
     }
