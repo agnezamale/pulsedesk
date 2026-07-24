@@ -139,5 +139,3 @@ Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`)
 
 - Do not commit `.env` or API tokens
 - H2 data is in-memory and resets when the backend restarts
-- Ticket categories: `BUG`, `FEATURE`, `BILLING`, `ACCOUNT`, `OTHER`
-- Priorities: `LOW`, `MEDIUM`, `HIGH`
