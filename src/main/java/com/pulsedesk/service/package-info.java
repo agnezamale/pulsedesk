@@ -1,4 +1,4 @@
 /**
- * Business services will live here (e.g. comment intake, triage).
+ * Business services for comments, tickets, and triage.
  */
 package com.pulsedesk.service;

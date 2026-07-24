@@ -1,4 +1,4 @@
 /**
- * Spring Data JPA repositories will live here.
+ * Spring Data JPA repositories for comments and tickets.
  */
 package com.pulsedesk.repository;

@@ -16,7 +16,7 @@ public class CreateCommentRequest {
         return text;
     }
 
-    public void SetText(String text) {
+    public void setText(String text) {
         this.text = text;
     }
 

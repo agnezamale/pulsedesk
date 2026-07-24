@@ -1,4 +1,4 @@
 /**
- * External API clients will live here (e.g. Hugging Face Inference API).
+ * External API clients (Hugging Face Inference Providers).
  */
 package com.pulsedesk.client;

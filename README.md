@@ -1,71 +1,130 @@
-# PulseDesk (starter)
+# PulseDesk
 
-Spring Boot starter for a comment-to-ticket triage backend.  
-This repository is a **scaffold only** — no triage / Hugging Face business logic yet.
+Backend + React UI that accepts user comments, analyzes them with Hugging Face, and creates support tickets when needed.
+
+## Features
+
+- `POST /comments`, `GET /comments`
+- Automatic triage with Hugging Face Inference Providers
+- Keyword-based fallback triage if HF is unavailable
+- Ticket fields: title, category, priority, summary
+- `GET /tickets`, `GET /tickets/{id}`
+- H2 in-memory database
+- Optional React UI in `frontend/`
 
 ## Stack
 
-- Java 17+
-- Spring Boot 4
-- Spring Web, Validation, Spring Data JPA
-- H2 (in-memory)
-- Maven Wrapper (`mvnw`)
+- Java 17, Spring Boot 4
+- Spring Web, Validation, Spring Data JPA, H2
+- Hugging Face chat completions (`router.huggingface.co`)
+- React + Vite frontend
+- JUnit 5 + MockMvc tests, JaCoCo coverage
 
 ## Prerequisites
 
-- JDK 17 or newer
-- A [Hugging Face](https://huggingface.co/) account and API token (when you add AI later)
+- JDK 17+
+- Node.js 18+ (for UI)
+- Hugging Face account + token with Inference Providers access
+- HF Inference Providers enabled (e.g. Featherless) and billing/credits if required
 
-## Setup
+## Backend setup
 
 ```bash
 cd pulsedesk
-cp .env.example .env
-# edit .env and set HF_API_TOKEN when needed
-```
-
-Export the token in your shell (or load `.env` with your preferred tool):
-
-```bash
 export HF_API_TOKEN=hf_your_token_here
-```
-
-## Run
-
-```bash
 ./mvnw spring-boot:run
 ```
 
-App: http://localhost:8080  
-Health check: `GET http://localhost:8080/api/health`  
+API: http://localhost:8080  
+Health: http://localhost:8080/api/health  
 H2 console: http://localhost:8080/h2-console  
-- JDBC URL: `jdbc:h2:mem:pulsedesk`  
-- User: `sa`  
-- Password: *(empty)*
+- JDBC URL: `jdbc:h2:mem:pulsedesk`
+- User: `sa`
+- Password: empty
+
+### Triage mode
+
+Default uses Hugging Face:
+
+```yaml
+pulsedesk:
+  triage:
+    provider: huggingface
+```
+
+Force keyword-only triage:
+
+```yaml
+pulsedesk:
+  triage:
+    provider: dummy
+```
+
+If Hugging Face fails (missing token, network, provider error), the app logs a warning and falls back to keyword triage automatically.
+
+## Frontend setup
+
+```bash
+cd frontend
+cp .env.example .env
+npm install
+npm run dev
+```
+
+UI: http://localhost:5173
+
+Optional `.env`:
+
+```bash
+VITE_API_URL=http://localhost:8080
+```
+
+## Example API calls
+
+```bash
+# Creates a ticket (issue)
+curl -s -X POST http://localhost:8080/comments \
+  -H "Content-Type: application/json" \
+  -d '{"text":"App crashes when I open settings","channel":"web"}'
+
+# Usually no ticket (compliment)
+curl -s -X POST http://localhost:8080/comments \
+  -H "Content-Type: application/json" \
+  -d '{"text":"I love this app, thanks!","channel":"app-review"}'
+
+curl -s http://localhost:8080/comments
+curl -s http://localhost:8080/tickets
+```
+
+## Tests
+
+```bash
+./mvnw test
+```
+
+Coverage report:
+
+```bash
+./mvnw test
+open target/site/jacoco/index.html
+```
 
 ## Project layout
 
 ```
 src/main/java/com/pulsedesk/
-  PulsedeskApplication.java
-  config/          # app configuration (e.g. Hugging Face properties)
-  controller/      # REST controllers
-  model/           # entities / DTOs (to be added)
-  repository/      # Spring Data repositories (to be added)
-  service/         # business logic (to be added)
-  client/          # external API clients (Hugging Face, to be added)
+  controller/   REST endpoints
+  service/      comment/ticket/triage logic
+  repository/   JPA repositories
+  model/        entities + DTOs
+  client/       Hugging Face client
+  config/       CORS, RestClient, properties
+frontend/       React UI
 ```
 
-## Suggested next steps (assignment)
+## Notes
 
-1. Add `Comment` and `Ticket` entities + repositories  
-2. Implement `POST/GET /comments`, `GET /tickets`, `GET /tickets/{id}`  
-3. Call Hugging Face Inference API and map the response to ticket fields  
-4. Persist results in H2  
-5. (Optional) Simple UI + deploy  
-
-## Useful links
-
-- [Hugging Face Inference API](https://huggingface.co/inference-api)
-- [Spring Boot](https://spring.io/projects/spring-boot)
-- [H2 Database](https://www.h2database.com/)
+- Do not commit `.env` or API tokens
+- H2 data resets when the app stops
+- Ticket categories: `BUG`, `FEATURE`, `BILLING`, `ACCOUNT`, `OTHER`
+- Priorities: `LOW`, `MEDIUM`, `HIGH`

@@ -10,14 +10,30 @@ export default function App() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function refresh() {
-    const [c, t] = await Promise.all([getComments(), getTickets()]);
-    setComments(c);
-    setTickets(t);
-  }
-
   useEffect(() => {
-    refresh().catch((e) => setMessage(e.message));
+    let cancelled = false;
+
+    async function load() {
+      try {
+        const [nextComments, nextTickets] = await Promise.all([
+          getComments(),
+          getTickets(),
+        ]);
+        if (!cancelled) {
+          setComments(nextComments);
+          setTickets(nextTickets);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          setMessage(error.message);
+        }
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   async function onSubmit(e) {
@@ -30,9 +46,14 @@ export default function App() {
       setMessage(
         result.ticketCreated
           ? `Comment saved. Ticket #${result.ticketId} created.`
-          : "Comment saved. No ticket created."
+          : "Comment saved. No ticket created.",
       );
-      await refresh();
+      const [nextComments, nextTickets] = await Promise.all([
+        getComments(),
+        getTickets(),
+      ]);
+      setComments(nextComments);
+      setTickets(nextTickets);
     } catch (err) {
       setMessage(err.message);
     } finally {

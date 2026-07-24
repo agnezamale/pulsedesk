@@ -18,7 +18,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final TriageService triageService;
     private final TicketService ticketService;
-    
+
     public CommentService(
             CommentRepository commentRepository,
             TriageService triageService,

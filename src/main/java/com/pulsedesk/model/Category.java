@@ -1,6 +1,6 @@
 package com.pulsedesk.model;
 
-public enum Category{
+public enum Category {
     BUG,
     FEATURE,
     BILLING,

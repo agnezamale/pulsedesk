@@ -13,13 +13,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
 
 server:
   port: 8080
+
+# huggingface = AI triage (default), dummy = keyword-only triage
+pulsedesk:
+  triage:
+    provider: huggingface
 
 # Hugging Face Inference Providers (chat completions) — set HF_API_TOKEN in your environment
 huggingface:

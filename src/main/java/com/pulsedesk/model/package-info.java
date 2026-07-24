@@ -1,4 +1,4 @@
 /**
- * Domain entities and DTOs will live here (e.g. Comment, Ticket).
+ * Domain entities, enums, and API DTOs.
  */
 package com.pulsedesk.model;
