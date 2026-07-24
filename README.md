@@ -122,26 +122,50 @@ src/main/java/com/pulsedesk/
 frontend/       React UI
 ```
 
-## Deploy (optional)
+## Deploy
 
-### Backend (Render)
+### Live demo
+
+- Frontend (Vercel): https://pulsedesk-zeta.vercel.app
+- Backend (Render): https://pulsedesk-gifc.onrender.com
+
+> **Note:** The backend runs on Render’s free tier. After idle time the service sleeps, so the **first request may take about 30–60 seconds** while the app wakes up. Later requests are much faster.
+
+### Backend on Render
 
 1. Push this repo to GitHub (includes `Dockerfile`)
 2. Create a **Web Service** on [Render](https://render.com)
-3. Runtime: **Docker**, root directory empty
-4. Set env var `HF_API_TOKEN`
-5. After UI deploy, set `CORS_ALLOWED_ORIGINS=https://your-app.vercel.app,http://localhost:5173`
+3. Settings:
+   - Runtime: **Docker**
+   - Root Directory: empty (repo root)
+   - Branch: `main`
+4. Environment variables:
+   - `HF_API_TOKEN` = your Hugging Face token
+   - `CORS_ALLOWED_ORIGINS` = `https://pulsedesk-zeta.vercel.app,http://localhost:5173`
+5. Deploy, then check:
 
-### Frontend (Vercel)
+```bash
+curl https://pulsedesk-gifc.onrender.com/api/health
+```
 
-1. Root Directory: `frontend`
-2. Framework: Vite
-3. Output: `dist`
-4. Env: `VITE_API_URL=https://your-backend.onrender.com`
+### Frontend on Vercel
+
+1. Import the same GitHub repo in [Vercel](https://vercel.com)
+2. Settings:
+   - Root Directory: `frontend`
+   - Framework Preset: **Vite**
+   - Build Command: `npm run build`
+   - Output Directory: `dist`
+3. Environment variable:
+   - `VITE_API_URL` = `https://pulsedesk-gifc.onrender.com` (no trailing slash)
+4. Deploy
+
+After the Vercel domain is known, update `CORS_ALLOWED_ORIGINS` on Render and redeploy the backend.
 
 ## Notes
 
 - Do not commit `.env` or API tokens
-- H2 data resets when the app stops
+- H2 data is in-memory and resets when the backend restarts
+- Free Render instances sleep when idle (see cold-start note above)
 - Ticket categories: `BUG`, `FEATURE`, `BILLING`, `ACCOUNT`, `OTHER`
 - Priorities: `LOW`, `MEDIUM`, `HIGH`
