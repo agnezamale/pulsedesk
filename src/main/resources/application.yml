@@ -19,12 +19,14 @@ spring:
         format_sql: true
 
 server:
-  port: 8080
+  port: ${PORT:8080}
 
 # huggingface = AI triage (default), dummy = keyword-only triage
 pulsedesk:
   triage:
     provider: huggingface
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
 
 # Hugging Face Inference Providers (chat completions) — set HF_API_TOKEN in your environment
 huggingface:

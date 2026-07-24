@@ -122,6 +122,23 @@ src/main/java/com/pulsedesk/
 frontend/       React UI
 ```
 
+## Deploy (optional)
+
+### Backend (Render)
+
+1. Push this repo to GitHub (includes `Dockerfile`)
+2. Create a **Web Service** on [Render](https://render.com)
+3. Runtime: **Docker**, root directory empty
+4. Set env var `HF_API_TOKEN`
+5. After UI deploy, set `CORS_ALLOWED_ORIGINS=https://your-app.vercel.app,http://localhost:5173`
+
+### Frontend (Vercel)
+
+1. Root Directory: `frontend`
+2. Framework: Vite
+3. Output: `dist`
+4. Env: `VITE_API_URL=https://your-backend.onrender.com`
+
 ## Notes
 
 - Do not commit `.env` or API tokens
