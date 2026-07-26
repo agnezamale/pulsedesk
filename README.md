@@ -134,9 +134,10 @@ Live demo:
 
 Backend is on Render (Docker), frontend on Vercel (`frontend/` + `VITE_API_URL`).
 
-> **Note:** Render’s free tier sleeps when idle, so the **first request may take about 30–60 seconds**. Later requests are faster.
 
 ## Notes
 
+- After you submit a comment, the AI analyzes it asynchronously — the comment appears right away, but ticket creation can take a few seconds (sometimes longer if Hugging Face is slow or cold-starting)
+- Check `GET /comments/{id}/triage-status` (or wait for the UI status message) to see when analysis finishes
 - Do not commit `.env` or API tokens
 - H2 data is in-memory and resets when the backend restarts
