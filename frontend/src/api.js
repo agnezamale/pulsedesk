@@ -21,3 +21,21 @@ export async function getTickets() {
   if (!res.ok) throw new Error("Failed to load tickets");
   return res.json();
 }
+
+export async function getTriageStatus(commentId) {
+  const res = await fetch(`${API_URL}/comments/${commentId}/triage-status`);
+  if (!res.ok) throw new Error("Failed to load triage status");
+  return res.json();
+}
+
+export async function waitForTriage(commentId, { intervalMs = 1000, timeoutMs = 60_000 } = {}) {
+  const started = Date.now();
+  while (Date.now() - started < timeoutMs) {
+    const status = await getTriageStatus(commentId);
+    if (status.triageStatus === "COMPLETED") {
+      return status;
+    }
+    await new Promise((resolve) => setTimeout(resolve, intervalMs));
+  }
+  throw new Error("Triage timed out");
+}

@@ -73,6 +73,15 @@ class DummyTriageServiceTest {
     }
 
     @Test
+    void createsBugTicketWhenCloseButtonDoesNothing() {
+        TriageResult result = triageService.analyze(comment("Close button does nothing"));
+
+        assertTrue(result.shouldCreateTicket());
+        assertEquals(Category.BUG, result.getCategory());
+        assertEquals(Priority.HIGH, result.getPriority());
+    }
+
+    @Test
     void doesNotCreateTicketForSuccessfulPaymentScreenClose() {
         TriageResult result = triageService.analyze(
                 comment("Payment screen closes after successful payment"));

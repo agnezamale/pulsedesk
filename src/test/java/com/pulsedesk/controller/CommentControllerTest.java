@@ -53,7 +53,7 @@ class CommentControllerTest {
         comment.setChannel("web");
         comment.setCreatedAt(Instant.parse("2026-07-24T12:00:00Z"));
 
-        when(commentService.create(any())).thenReturn(CommentResponse.from(comment, null));
+        when(commentService.create(any())).thenReturn(CommentResponse.pending(comment));
 
         mockMvc.perform(post("/comments")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -63,6 +63,7 @@ class CommentControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(1))
                 .andExpect(jsonPath("$.text").value("App crashes on login"))
+                .andExpect(jsonPath("$.triagePending").value(true))
                 .andExpect(jsonPath("$.ticketCreated").value(false));
     }
 

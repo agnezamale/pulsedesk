@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { createComment, getComments, getTickets } from "./api";
+import { useEffect, useRef, useState } from "react";
+import { createComment, getComments, getTickets, waitForTriage } from "./api";
 import "./App.css";
 
 export default function App() {
@@ -9,6 +9,7 @@ export default function App() {
   const [tickets, setTickets] = useState([]);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const pollGeneration = useRef(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -36,26 +37,49 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (!message || message.includes("Analyzing")) {
+      return undefined;
+    }
+    const timer = setTimeout(() => setMessage(""), 10_000);
+    return () => clearTimeout(timer);
+  }, [message]);
+
+  async function refreshLists() {
+    const [nextComments, nextTickets] = await Promise.all([
+      getComments(),
+      getTickets(),
+    ]);
+    setComments(nextComments);
+    setTickets(nextTickets);
+  }
+
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    const generation = ++pollGeneration.current;
     try {
       const result = await createComment(text, channel);
       setText("");
+      setMessage("Comment saved. Analyzing with AI...");
+      await refreshLists();
+      setLoading(false);
+
+      const status = await waitForTriage(result.id);
+      if (generation !== pollGeneration.current) {
+        return;
+      }
+      await refreshLists();
       setMessage(
-        result.ticketCreated
-          ? `Comment saved. Ticket #${result.ticketId} created.`
+        status.ticketCreated
+          ? `Comment saved. Ticket #${status.ticketId} created.`
           : "Comment saved. No ticket created.",
       );
-      const [nextComments, nextTickets] = await Promise.all([
-        getComments(),
-        getTickets(),
-      ]);
-      setComments(nextComments);
-      setTickets(nextTickets);
     } catch (err) {
-      setMessage(err.message);
+      if (generation === pollGeneration.current) {
+        setMessage(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -100,7 +124,9 @@ export default function App() {
           <ul>
             {comments.map((c) => (
               <li key={c.id}>
-                <strong>#{c.id}</strong> [{c.channel || "n/a"}] {c.text}
+                <strong>#{c.id}</strong> [{c.channel || "n/a"}]
+                {c.triageStatus === "PENDING" ? " (analyzing…) " : " "}
+                {c.text}
               </li>
             ))}
           </ul>

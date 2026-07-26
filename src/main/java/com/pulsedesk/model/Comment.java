@@ -4,11 +4,14 @@ import java.time.Instant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -26,6 +29,11 @@ public class Comment {
     @Size(max = 100)
     @Column(length = 100)
     private String channel;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private TriageStatus triageStatus = TriageStatus.PENDING;
 
     @Column(nullable = false, updatable = false)
     private Instant createdAt = Instant.now();
@@ -49,6 +57,12 @@ public class Comment {
     }
     public void setChannel(String channel) {
         this.channel = channel;
+    }
+    public TriageStatus getTriageStatus() {
+        return triageStatus;
+    }
+    public void setTriageStatus(TriageStatus triageStatus) {
+        this.triageStatus = triageStatus;
     }
     public Instant getCreatedAt() {
         return createdAt;

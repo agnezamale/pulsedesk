@@ -31,7 +31,7 @@ public class HuggingFaceClient {
                 "messages", List.of(
                         Map.of("role", "user", "content", prompt)
                 ),
-                "max_tokens", 256,
+                "max_tokens", 180,
                 "temperature", 0.2
         );
 

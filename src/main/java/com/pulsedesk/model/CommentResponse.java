@@ -8,8 +8,21 @@ public class CommentResponse {
     private String text;
     private String channel;
     private Instant createdAt;
+    private boolean triagePending;
     private boolean ticketCreated;
     private Long ticketId;
+
+    public static CommentResponse pending(Comment comment) {
+        CommentResponse response = new CommentResponse();
+        response.id = comment.getId();
+        response.text = comment.getText();
+        response.channel = comment.getChannel();
+        response.createdAt = comment.getCreatedAt();
+        response.triagePending = true;
+        response.ticketCreated = false;
+        response.ticketId = null;
+        return response;
+    }
 
     public static CommentResponse from(Comment comment, Ticket ticket) {
         CommentResponse response = new CommentResponse();
@@ -17,6 +30,7 @@ public class CommentResponse {
         response.text = comment.getText();
         response.channel = comment.getChannel();
         response.createdAt = comment.getCreatedAt();
+        response.triagePending = comment.getTriageStatus() == TriageStatus.PENDING;
         response.ticketCreated = ticket != null;
         response.ticketId = ticket != null ? ticket.getId() : null;
         return response;
@@ -36,6 +50,10 @@ public class CommentResponse {
 
     public Instant getCreatedAt() {
         return createdAt;
+    }
+
+    public boolean isTriagePending() {
+        return triagePending;
     }
 
     public boolean isTicketCreated() {

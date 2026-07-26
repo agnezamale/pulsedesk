@@ -18,6 +18,16 @@ public class DummyTriageService implements TriageService {
             return TriageResult.noTicket();
         }
 
+        // Broken controls (e.g. Close does nothing) — check before "expected close" rules
+        if (isBrokenControl(text)) {
+            return TriageResult.ticket(
+                    shorten("Bug report: " + comment.getText(), 200),
+                    Category.BUG,
+                    Priority.HIGH,
+                    "User reported a technical issue that likely needs a ticket."
+            );
+        }
+
         // Expected UI / success flow should not create tickets
         if (isExpectedCloseBehavior(text) || isExpectedSuccessFlow(text)) {
             return TriageResult.noTicket();
@@ -66,7 +76,41 @@ public class DummyTriageService implements TriageService {
         return TriageResult.noTicket();
     }
 
+    private boolean isBrokenControl(String text) {
+        boolean mentionsControl = containsAny(
+                text,
+                "close button",
+                "close",
+                "button",
+                "save",
+                "submit",
+                "exit"
+        );
+        boolean controlBroken = containsAny(
+                text,
+                "does nothing",
+                "do nothing",
+                "doesn't work",
+                "does not work",
+                "won't work",
+                "will not work",
+                "unresponsive",
+                "no response",
+                "not responding",
+                "won't close",
+                "will not close",
+                "doesn't close",
+                "does not close",
+                "can't close",
+                "cannot close"
+        );
+        return mentionsControl && controlBroken;
+    }
+
     private boolean isExpectedCloseBehavior(String text) {
+        if (isBrokenControl(text)) {
+            return false;
+        }
         boolean mentionsCloseAction = containsAny(
                 text,
                 "close button",
@@ -81,7 +125,18 @@ public class DummyTriageService implements TriageService {
                 "click exit"
         );
         boolean mentionsClosing = containsAny(text, "closes", "closed", "closing", "exits", "exit the app", "quits");
-        boolean mentionsUnexpectedFailure = containsAny(text, "crash", "freeze", "error", "broken", "not working", "fail");
+        boolean mentionsUnexpectedFailure = containsAny(
+                text,
+                "crash",
+                "freeze",
+                "error",
+                "broken",
+                "not working",
+                "fail",
+                "does nothing",
+                "doesn't work",
+                "does not work"
+        );
         return mentionsCloseAction && mentionsClosing && !mentionsUnexpectedFailure;
     }
 
