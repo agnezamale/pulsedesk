@@ -10,13 +10,14 @@ Backend + React UI that accepts user comments, analyzes them with Hugging Face, 
 - Ticket fields: title, category, priority, summary
 - `GET /tickets`, `GET /tickets/{id}`
 - H2 in-memory database
-- Optional React UI in `frontend/`
+- React UI in `frontend/`
 
 ## Stack
 
 - Java 17, Spring Boot 4
 - Spring Web, Validation, Spring Data JPA, H2
 - Hugging Face chat completions (`router.huggingface.co`)
+- Model: `mistralai/Mistral-7B-Instruct-v0.2` via Featherless (`:featherless-ai`)
 - React + Vite frontend
 - JUnit 5 + MockMvc tests, JaCoCo coverage
 
@@ -44,12 +45,16 @@ H2 console: http://localhost:8080/h2-console
 
 ### Triage mode
 
-Default uses Hugging Face:
+Default uses Hugging Face with **Mistral-7B-Instruct-v0.2** (Featherless):
 
 ```yaml
 pulsedesk:
   triage:
     provider: huggingface
+
+huggingface:
+  api-url: https://router.huggingface.co/v1/chat/completions
+  model: mistralai/Mistral-7B-Instruct-v0.2:featherless-ai
 ```
 
 Force keyword-only triage:
