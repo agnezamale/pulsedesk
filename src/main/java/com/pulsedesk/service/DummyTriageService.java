@@ -18,8 +18,13 @@ public class DummyTriageService implements TriageService {
             return TriageResult.noTicket();
         }
 
-        // Billing
-        if (containsAny(text, "bill", "invoice", "charge", "payment", "refund")) {
+        // Expected UI / success flow should not create tickets
+        if (isExpectedCloseBehavior(text) || isExpectedSuccessFlow(text)) {
+            return TriageResult.noTicket();
+        }
+
+        // Billing — only when there is a real money problem, not just the word "payment"
+        if (isBillingProblem(text)) {
             return TriageResult.ticket(
                     shorten("Billing issue: " + comment.getText(), 200),
                     Category.BILLING,
@@ -39,7 +44,7 @@ public class DummyTriageService implements TriageService {
         }
 
         // Bug / crash / error
-        if (containsAny(text, "crash", "bug", "error", "broken", "fail", "not working")) {
+        if (containsAny(text, "crash", "bug", "error", "broken", "fail", "not working", "freeze")) {
             return TriageResult.ticket(
                     shorten("Bug report: " + comment.getText(), 200),
                     Category.BUG,
@@ -59,6 +64,71 @@ public class DummyTriageService implements TriageService {
         }
 
         return TriageResult.noTicket();
+    }
+
+    private boolean isExpectedCloseBehavior(String text) {
+        boolean mentionsCloseAction = containsAny(
+                text,
+                "close button",
+                "press close",
+                "pressing close",
+                "tap close",
+                "click close",
+                "hit close",
+                "press x",
+                "press exit",
+                "tap exit",
+                "click exit"
+        );
+        boolean mentionsClosing = containsAny(text, "closes", "closed", "closing", "exits", "exit the app", "quits");
+        boolean mentionsUnexpectedFailure = containsAny(text, "crash", "freeze", "error", "broken", "not working", "fail");
+        return mentionsCloseAction && mentionsClosing && !mentionsUnexpectedFailure;
+    }
+
+    private boolean isExpectedSuccessFlow(String text) {
+        boolean success = containsAny(text, "successful", "successfully", "success", "after payment", "completed");
+        boolean closesOrRedirects = containsAny(text, "closes", "closed", "closing", "redirect", "returns to");
+        boolean problem = containsAny(
+                text,
+                "fail",
+                "failed",
+                "error",
+                "crash",
+                "freeze",
+                "charged anyway",
+                "charged twice",
+                "double charge",
+                "refund",
+                "wrong amount",
+                "not working"
+        );
+        return success && closesOrRedirects && !problem;
+    }
+
+    private boolean isBillingProblem(String text) {
+        boolean billingWord = containsAny(text, "bill", "invoice", "charge", "payment", "refund", "subscription");
+        if (!billingWord) {
+            return false;
+        }
+        // Mentions payment/billing in a success/normal flow without a problem
+        if (isExpectedSuccessFlow(text)) {
+            return false;
+        }
+        return containsAny(
+                text,
+                "fail",
+                "failed",
+                "twice",
+                "double",
+                "refund",
+                "charged anyway",
+                "overcharged",
+                "wrong amount",
+                "unexpected charge",
+                "billed after",
+                "cancelled",
+                "cancel"
+        ) || containsAny(text, "invoice", "refund");
     }
 
     private boolean containsAny(String text, String... keywords) {

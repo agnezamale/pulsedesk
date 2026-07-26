@@ -31,5 +31,5 @@ pulsedesk:
 # Hugging Face Inference Providers (chat completions) — set HF_API_TOKEN in your environment
 huggingface:
   api-url: https://router.huggingface.co/v1/chat/completions
-  model: Qwen/Qwen2.5-1.5B-Instruct:featherless-ai
+  model: mistralai/Mistral-7B-Instruct-v0.2:featherless-ai
   api-token: ${HF_API_TOKEN:}

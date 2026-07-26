@@ -65,8 +65,34 @@ class DummyTriageServiceTest {
     }
 
     @Test
+    void doesNotCreateTicketForExpectedCloseBehavior() {
+        TriageResult result = triageService.analyze(
+                comment("The app closes when I press the Close button"));
+
+        assertFalse(result.shouldCreateTicket());
+    }
+
+    @Test
+    void doesNotCreateTicketForSuccessfulPaymentScreenClose() {
+        TriageResult result = triageService.analyze(
+                comment("Payment screen closes after successful payment"));
+
+        assertFalse(result.shouldCreateTicket());
+    }
+
+    @Test
+    void createsHighPriorityBillingTicketForFailedPaymentCharge() {
+        TriageResult result = triageService.analyze(
+                comment("Payment fails and I was charged anyway"));
+
+        assertTrue(result.shouldCreateTicket());
+        assertEquals(Category.BILLING, result.getCategory());
+        assertEquals(Priority.HIGH, result.getPriority());
+    }
+
+    @Test
     void doesNotCreateTicketForNeutralText() {
-        TriageResult result = triageService.analyze(comment("The screen freezes every time I tap Save"));
+        TriageResult result = triageService.analyze(comment("The UI looks clean and simple"));
 
         assertFalse(result.shouldCreateTicket());
     }
